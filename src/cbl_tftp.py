@@ -6,14 +6,17 @@ tftp server with static file handling
 
 import os
 
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from fbtftp.base_handler import BaseHandler
 from fbtftp.base_server import BaseServer
 
+# debug values
 LISTEN_ON = '0.0.0.0'
 SERVER_PORT = 69
-TFTP_ROOT = 'example_configs/' # debug directory
+TFTP_ROOT = 'example_configs/'
 RETRIES = 3
 TIMEOUT = 5
+TEMPLATES_PATH = 'example_configs/templates/'
 
 class TftpData:
 
@@ -42,6 +45,17 @@ class TftpServer(BaseServer):
         return StaticHandler(
             server_addr, peer, path, options, session_stats
         )
+
+# render config template
+def render_template(template, **kwargs):
+    env = Environment(
+        loader = FileSystemLoader(TEMPLATES_PATH),
+        undefined = StrictUndefined,
+        trim_blocks = True
+        )
+
+    template = env.get_template(template)
+    return template.render(**kwargs)
 
 def session_stats(stats):
     print('')
