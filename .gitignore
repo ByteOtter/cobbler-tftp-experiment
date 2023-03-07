@@ -7,3 +7,6 @@
 .venv/
 venv/
 venv3/
+
+# debug
+example_configs/
