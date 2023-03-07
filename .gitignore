@@ -1,0 +1,9 @@
+# IDEs
+.idea/
+.fleet/
+.vscode/
+
+# Python
+.venv/
+venv/
+venv3/
