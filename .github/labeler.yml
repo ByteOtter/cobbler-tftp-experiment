@@ -1,0 +1,16 @@
+# configurations for the labeler workflow
+
+python:
+- *.py
+
+documentation:
+- docs/*
+- README.md
+- LICENSE
+- CODE_OF_CONDUCT.md
+- CONTRIBUTING
+
+configs:
+- *.toml
+- *.yml
+- *.cfg
