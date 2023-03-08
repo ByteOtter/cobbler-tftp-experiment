@@ -9,7 +9,7 @@ import os
 import yaml
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
-from fbtftp.base_handler import BaseHandler, ResponseData
+from fbtftp.base_handler import BaseHandler
 from fbtftp.base_server import BaseServer
 
 # read settings file
