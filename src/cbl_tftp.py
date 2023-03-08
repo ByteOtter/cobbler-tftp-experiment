@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This source code is licensed under the MIT license
 
 """
@@ -5,23 +6,31 @@ tftp server with static file handling
 """
 
 import os
+import yaml
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
-from fbtftp.base_handler import BaseHandler
+from fbtftp.base_handler import BaseHandler, ResponseData
 from fbtftp.base_server import BaseServer
 
-# debug values
-LISTEN_ON = "0.0.0.0"
-SERVER_PORT = 69
-TFTP_ROOT = "example_configs/"
-RETRIES = 3
-TIMEOUT = 5
-TEMPLATES_PATH = "example_configs/templates/"
+# read settings file
+with open("src/settings.yml", "r") as stream:
+    try:
+        settings = yaml.safe_load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
+
+listen_on = settings["serverConfig"]["LISTEN_ON"]
+tftp_root = settings["serverConfig"]["TFTP_ROOT"]
+port = settings["serverConfig"]["SERVER_PORT"]
+templates_path = settings["serverConfig"]["TEMPLATES_PATH"]
+retries = settings["serverConfig"]["RETRIES"]
+timeout = settings["serverConfig"]["TIMEOUT"]
 
 
+# ResponseData
 class TftpData:
     def __init__(self, filename):
-        path = os.path.join(TFTP_ROOT, filename)
+        path = os.path.join(tftp_root, filename)
         self._size = os.stat(path).st_size
         self._reader = open(path, "rb")
 
@@ -48,7 +57,7 @@ class TftpServer(BaseServer):
 # render config template
 def render_template(template, **kwargs):
     env = Environment(
-        loader=FileSystemLoader(TEMPLATES_PATH),
+        loader=FileSystemLoader(templates_path),
         undefined=StrictUndefined,
         trim_blocks=True,
     )
@@ -67,7 +76,7 @@ def session_stats(stats):
 
 
 def main():
-    server = TftpServer(LISTEN_ON, SERVER_PORT, RETRIES, TIMEOUT)
+    server = TftpServer(listen_on, port, retries, timeout)
     try:
         server.run()
     except KeyboardInterrupt:

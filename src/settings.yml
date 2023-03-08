@@ -1,0 +1,8 @@
+# debug values
+serverConfig:
+  LISTEN_ON: "0.0.0.0"
+  SERVER_PORT: 69
+  TFTP_ROOT: "example_configs/"
+  RETRIES: 3
+  TIMEOUT: 5
+  TEMPLATES_PATH: "example_configs/templates/"
