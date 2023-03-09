@@ -6,3 +6,8 @@ serverConfig:
   RETRIES: 3
   TIMEOUT: 5
   TEMPLATES_PATH: "example_configs/templates/"
+
+cobbler:
+  USERNAME:
+  PASSWORD:
+  AUTH_TOKEN:
