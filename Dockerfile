@@ -9,4 +9,4 @@ RUN pip3 install .
 
 COPY . .
 
-CMD ["sudo", "python3", "src/cobbler_tftp/cbl_tpftp.py"]
+CMD ["sudo", "python3", "src/main.py"]
