@@ -8,12 +8,12 @@ tftp server with static file handling
 import os
 import yaml
 
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from fbtftp.base_handler import BaseHandler
 from fbtftp.base_server import BaseServer
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 # read settings file
-with open("src/settings.yml", "r") as stream:
+with open("src/settings.yml", "r", encoding="utf-8") as stream:
     try:
         settings = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
