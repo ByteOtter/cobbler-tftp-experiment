@@ -6,12 +6,11 @@ tftp server with static file handling
 """
 
 import os
-import yaml
 
+import yaml
 from fbtftp.base_handler import BaseHandler
 from fbtftp.base_server import BaseServer
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
-
 
 # TODO: settings file path read from arguments upon execution. If none: default.
 with open("src/cobbler_tftp/config/settings.yml", "r", encoding="utf-8") as stream:
@@ -20,12 +19,33 @@ with open("src/cobbler_tftp/config/settings.yml", "r", encoding="utf-8") as stre
     except yaml.YAMLError as exc:
         print(exc)
 
+
 LISTEN_ON = SETTINGS["serverConfig"]["LISTEN_ON"]
 TFTP_ROOT = SETTINGS["serverConfig"]["TFTP_ROOT"]
 PORT = SETTINGS["serverConfig"]["SERVER_PORT"]
 TEMPLATES_PATH = SETTINGS["serverConfig"]["TEMPLATES_PATH"]
 RETRIES = SETTINGS["serverConfig"]["RETRIES"]
 TIMEOUT = SETTINGS["serverConfig"]["TIMEOUT"]
+
+
+class Settings:
+    def __init__(self) -> None:
+        self.cobbler_connection = CobblerConnection()
+        self.retries = 5
+
+    def load(self, settings: Dict[str, Any]):
+        retries_env = os.environ["TFTP_SERVER_CONFIG_RETRIES"]
+        if retries_env:
+            self.retries = retries_env
+        self.retries = settings.get("serverConfig", {}).get("retries", 5)
+
+
+class CobblerConnection:
+    def __init__(self) -> None:
+        self.hostname = ""
+        self.user = ""
+        self.password = ""
+        self.password_file = ""
 
 
 # ResponseData
@@ -53,6 +73,9 @@ class StaticHandler(BaseHandler):
 class TftpServer(BaseServer):
     def get_handler(self, server_addr, peer, path, options):
         return StaticHandler(server_addr, peer, path, options, session_stats)
+
+
+TftpServer
 
 
 # render config template
