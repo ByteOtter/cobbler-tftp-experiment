@@ -28,24 +28,24 @@ RETRIES = SETTINGS["serverConfig"]["RETRIES"]
 TIMEOUT = SETTINGS["serverConfig"]["TIMEOUT"]
 
 
-class Settings:
-    def __init__(self) -> None:
-        self.cobbler_connection = CobblerConnection()
-        self.retries = 5
+# class Settings:
+#     def __init__(self) -> None:
+#         self.cobbler_connection = CobblerConnection()
+#         self.retries = 5
 
-    def load(self, settings: Dict[str, Any]):
-        retries_env = os.environ["TFTP_SERVER_CONFIG_RETRIES"]
-        if retries_env:
-            self.retries = retries_env
-        self.retries = settings.get("serverConfig", {}).get("retries", 5)
+#     def load(self, settings: Dict[str, Any]):
+#         retries_env = os.environ["TFTP_SERVER_CONFIG_RETRIES"]
+#         if retries_env:
+#             self.retries = retries_env
+#         self.retries = settings.get("serverConfig", {}).get("retries", 5)
 
 
-class CobblerConnection:
-    def __init__(self) -> None:
-        self.hostname = ""
-        self.user = ""
-        self.password = ""
-        self.password_file = ""
+# class CobblerConnection:
+#     def __init__(self) -> None:
+#         self.hostname = ""
+#         self.user = ""
+#         self.password = ""
+#         self.password_file = ""
 
 
 # ResponseData
@@ -73,9 +73,6 @@ class StaticHandler(BaseHandler):
 class TftpServer(BaseServer):
     def get_handler(self, server_addr, peer, path, options):
         return StaticHandler(server_addr, peer, path, options, session_stats)
-
-
-TftpServer
 
 
 # render config template
