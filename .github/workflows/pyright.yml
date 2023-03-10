@@ -1,0 +1,11 @@
+name: Pyright
+
+on: [push, pull_request]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run pyright
+        uses: jakebailey/pyright-action@v1.5.1

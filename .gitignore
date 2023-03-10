@@ -8,7 +8,17 @@
 venv/
 venv3/
 
+# Docs
+docs/*gz
+docs/*.html
+docs/_build/
+
 # debug
 example_configs/
+requirements.txt
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 **/**/__pycache__/

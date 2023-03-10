@@ -1,3 +1,3 @@
-# Cobbler-TFTP (Experimental)
+# cobbler-tftp
 
-The tftp server for Cobbler based on [fbtftp](https://github.com/facebookarchive/fbtftp/).
+Experimental - Cobbler stateless TFTP server
