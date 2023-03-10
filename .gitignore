@@ -10,3 +10,5 @@ venv3/
 
 # debug
 example_configs/
+
+**/**/__pycache__/

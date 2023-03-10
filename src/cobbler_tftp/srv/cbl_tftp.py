@@ -6,31 +6,52 @@ tftp server with static file handling
 """
 
 import os
-import yaml
 
+import yaml
 from fbtftp.base_handler import BaseHandler
 from fbtftp.base_server import BaseServer
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
-# read settings file
-with open("src/settings.yml", "r", encoding="utf-8") as stream:
+# TODO: settings file path read from arguments upon execution. If none: default.
+with open("src/cobbler_tftp/config/settings.yml", "r", encoding="utf-8") as stream:
     try:
-        settings = yaml.safe_load(stream)
+        SETTINGS = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
         print(exc)
 
-listen_on = settings["serverConfig"]["LISTEN_ON"]
-tftp_root = settings["serverConfig"]["TFTP_ROOT"]
-port = settings["serverConfig"]["SERVER_PORT"]
-templates_path = settings["serverConfig"]["TEMPLATES_PATH"]
-retries = settings["serverConfig"]["RETRIES"]
-timeout = settings["serverConfig"]["TIMEOUT"]
+
+LISTEN_ON = SETTINGS["serverConfig"]["LISTEN_ON"]
+TFTP_ROOT = SETTINGS["serverConfig"]["TFTP_ROOT"]
+PORT = SETTINGS["serverConfig"]["SERVER_PORT"]
+TEMPLATES_PATH = SETTINGS["serverConfig"]["TEMPLATES_PATH"]
+RETRIES = SETTINGS["serverConfig"]["RETRIES"]
+TIMEOUT = SETTINGS["serverConfig"]["TIMEOUT"]
+
+
+class Settings:
+    def __init__(self) -> None:
+        self.cobbler_connection = CobblerConnection()
+        self.retries = 5
+
+    def load(self, settings: Dict[str, Any]):
+        retries_env = os.environ["TFTP_SERVER_CONFIG_RETRIES"]
+        if retries_env:
+            self.retries = retries_env
+        self.retries = settings.get("serverConfig", {}).get("retries", 5)
+
+
+class CobblerConnection:
+    def __init__(self) -> None:
+        self.hostname = ""
+        self.user = ""
+        self.password = ""
+        self.password_file = ""
 
 
 # ResponseData
 class TftpData:
     def __init__(self, filename):
-        path = os.path.join(tftp_root, filename)
+        path = os.path.join(TFTP_ROOT, filename)
         self._size = os.stat(path).st_size
         self._reader = open(path, "rb")
 
@@ -54,10 +75,13 @@ class TftpServer(BaseServer):
         return StaticHandler(server_addr, peer, path, options, session_stats)
 
 
+TftpServer
+
+
 # render config template
 def render_template(template, **kwargs):
     env = Environment(
-        loader=FileSystemLoader(templates_path),
+        loader=FileSystemLoader(TEMPLATES_PATH),
         undefined=StrictUndefined,
         trim_blocks=True,
     )
@@ -73,15 +97,3 @@ def session_stats(stats):
     print("File: {}".format(stats.file_path))
     print("Sent Packets: {}".format(stats.packets_sent))
     print("#" * 60)
-
-
-def main():
-    server = TftpServer(listen_on, port, retries, timeout)
-    try:
-        server.run()
-    except KeyboardInterrupt:
-        server.close()
-
-
-if __name__ == "__main__":
-    main()
