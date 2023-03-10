@@ -1,2 +1,3 @@
 [MASTER]
+ignore-paths=docs
 disable=import-error, missing-class-docstring, missing-function-docstring, too-few-public-methods, consider-using-f-string, consider-using-with
